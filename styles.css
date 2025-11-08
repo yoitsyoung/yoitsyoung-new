@@ -206,3 +206,34 @@ body {
   justify-content: space-between;
   align-items: center;
 }
+
+.text-rewrite {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  transition: none;
+}
+
+.text-rewrite .text-content {
+  display: inline-block;
+  transition: opacity 0.15s ease;
+}
+
+.text-rewrite .text-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.text-rewrite:hover .text-content {
+  opacity: 0;
+}
+
+.text-rewrite:hover .text-hover {
+  opacity: 1;
+}
