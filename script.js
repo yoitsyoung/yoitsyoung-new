@@ -140,6 +140,9 @@ document.addEventListener("DOMContentLoaded", () => {
         clearTimeout(leaveTimeout);
         leaveTimeout = null;
       }
+      // Close projects if open
+      section.classList.remove("projects-active");
+      document.querySelector(".projects-showcase")?.classList.remove("active");
       section.classList.add("blog-active");
       blogShowcase.classList.add("active");
     };
@@ -178,6 +181,63 @@ document.addEventListener("DOMContentLoaded", () => {
     blogShowcase.addEventListener("mouseleave", () => {
       section.classList.remove("blog-active");
       blogShowcase.classList.remove("active");
+    });
+  }
+
+  // Projects showcase toggle with content transformation
+  const projectsTrigger = document.querySelector(".projects-trigger");
+  const projectsShowcase = document.querySelector(".projects-showcase");
+  
+  if (projectsTrigger && projectsShowcase && section) {
+    let hoverTimeout = null;
+    let leaveTimeout = null;
+    
+    const showProjectsShowcase = () => {
+      if (leaveTimeout) {
+        clearTimeout(leaveTimeout);
+        leaveTimeout = null;
+      }
+      // Close blog if open
+      section.classList.remove("blog-active");
+      document.querySelector(".blog-showcase")?.classList.remove("active");
+      section.classList.add("projects-active");
+      projectsShowcase.classList.add("active");
+    };
+    
+    const hideProjectsShowcase = () => {
+      if (hoverTimeout) {
+        clearTimeout(hoverTimeout);
+        hoverTimeout = null;
+      }
+      leaveTimeout = setTimeout(() => {
+        section.classList.remove("projects-active");
+        projectsShowcase.classList.remove("active");
+      }, 200);
+    };
+    
+    projectsTrigger.addEventListener("mouseenter", () => {
+      hoverTimeout = setTimeout(showProjectsShowcase, 300);
+    });
+    
+    projectsTrigger.addEventListener("mouseleave", hideProjectsShowcase);
+    
+    // Keep showcase open when hovering over it
+    projectsShowcase.addEventListener("mouseenter", () => {
+      if (hoverTimeout) {
+        clearTimeout(hoverTimeout);
+        hoverTimeout = null;
+      }
+      if (leaveTimeout) {
+        clearTimeout(leaveTimeout);
+        leaveTimeout = null;
+      }
+      section.classList.add("projects-active");
+      projectsShowcase.classList.add("active");
+    });
+    
+    projectsShowcase.addEventListener("mouseleave", () => {
+      section.classList.remove("projects-active");
+      projectsShowcase.classList.remove("active");
     });
   }
 });

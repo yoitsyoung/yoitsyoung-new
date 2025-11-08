@@ -169,6 +169,42 @@ body {
     width: 180px;
     height: 108px;
   }
+  
+  /* Mobile: Show hover images inline below text */
+  .hover-inline {
+    display: block;
+    margin-bottom: 12px;
+  }
+  
+  .hover-image {
+    position: static !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    display: block;
+    margin-top: 8px;
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    aspect-ratio: 5/3;
+    border-radius: 8px;
+  }
+  
+  /* Text rewrite: Show tapped state on mobile */
+  .text-rewrite.tapped .text-content {
+    opacity: 0;
+  }
+  
+  .text-rewrite.tapped .text-hover {
+    opacity: 1;
+    width: auto !important;
+    position: static !important;
+  }
+  
+  /* Blog trigger: Remove tap highlight */
+  .blog-trigger {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 @media (max-width: 600px) {
@@ -192,12 +228,28 @@ body {
     padding-right: 16vw;
   }
 
-  .hover-image {
-    display: none;
-  }
-
   .text-header {
     font-size: clamp(2rem, 9vw, 2.35rem);
+  }
+  
+  /* Keep inline images on very small screens too */
+  .hover-inline {
+    display: block;
+    margin-bottom: 12px;
+  }
+  
+  .hover-image {
+    display: block !important;
+    position: static !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    margin-top: 8px;
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+    aspect-ratio: 5/3;
+    border-radius: 8px;
   }
 }
 
@@ -246,7 +298,8 @@ body {
   transform-origin: top;
 }
 
-.section.blog-active .content-fade {
+.section.blog-active .content-fade,
+.section.projects-active .content-fade {
   opacity: 0;
   transform: translateY(-20px) scale(0.95);
   max-height: 0;
@@ -339,4 +392,118 @@ body {
   opacity: 0.6;
   margin-left: 24px;
   white-space: nowrap;
+}
+
+.projects-showcase {
+  max-height: 0;
+  overflow: hidden;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              margin 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.projects-showcase.active {
+  max-height: 600px;
+  opacity: 1;
+  transform: translateY(0);
+  margin: 24px auto;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.projects-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 24px;
+  padding-top: 8px;
+}
+
+.project-item {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.projects-showcase.active .project-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.projects-showcase.active .project-item:nth-child(1) {
+  transition-delay: 0.1s;
+}
+
+.projects-showcase.active .project-item:nth-child(2) {
+  transition-delay: 0.2s;
+}
+
+.projects-showcase.active .project-item:nth-child(3) {
+  transition-delay: 0.3s;
+}
+
+.project-item:hover {
+  opacity: 0.8;
+  transform: translateY(-4px);
+}
+
+.project-portrait {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--divider);
+  margin-bottom: 12px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.project-item:hover .project-portrait {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.project-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.project-title {
+  font-family: "Recia", Arial, sans-serif;
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.project-tag {
+  font-family: "Recia", Arial, sans-serif;
+  color: var(--text-secondary);
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.project-item:hover .project-title {
+  color: var(--text-primary);
+}
+
+@media (max-width: 767px) {
+  .projects-container {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+  }
+  
+  .project-portrait {
+    border-radius: 12px;
+  }
 }
