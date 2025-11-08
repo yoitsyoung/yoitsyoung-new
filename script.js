@@ -125,5 +125,60 @@ document.addEventListener("DOMContentLoaded", () => {
       reverseTypeWriter(25);
     });
   });
+
+  // Blog showcase toggle with content transformation
+  const blogTrigger = document.querySelector(".blog-trigger");
+  const blogShowcase = document.querySelector(".blog-showcase");
+  const section = document.querySelector(".section");
+  
+  if (blogTrigger && blogShowcase && section) {
+    let hoverTimeout = null;
+    let leaveTimeout = null;
+    
+    const showBlogShowcase = () => {
+      if (leaveTimeout) {
+        clearTimeout(leaveTimeout);
+        leaveTimeout = null;
+      }
+      section.classList.add("blog-active");
+      blogShowcase.classList.add("active");
+    };
+    
+    const hideBlogShowcase = () => {
+      if (hoverTimeout) {
+        clearTimeout(hoverTimeout);
+        hoverTimeout = null;
+      }
+      leaveTimeout = setTimeout(() => {
+        section.classList.remove("blog-active");
+        blogShowcase.classList.remove("active");
+      }, 200);
+    };
+    
+    blogTrigger.addEventListener("mouseenter", () => {
+      hoverTimeout = setTimeout(showBlogShowcase, 300);
+    });
+    
+    blogTrigger.addEventListener("mouseleave", hideBlogShowcase);
+    
+    // Keep showcase open when hovering over it
+    blogShowcase.addEventListener("mouseenter", () => {
+      if (hoverTimeout) {
+        clearTimeout(hoverTimeout);
+        hoverTimeout = null;
+      }
+      if (leaveTimeout) {
+        clearTimeout(leaveTimeout);
+        leaveTimeout = null;
+      }
+      section.classList.add("blog-active");
+      blogShowcase.classList.add("active");
+    });
+    
+    blogShowcase.addEventListener("mouseleave", () => {
+      section.classList.remove("blog-active");
+      blogShowcase.classList.remove("active");
+    });
+  }
 });
 
