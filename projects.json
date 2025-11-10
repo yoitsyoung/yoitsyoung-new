@@ -1,0 +1,71 @@
+{
+  "projects": [
+    {
+      "id": 1,
+      "title": "Project Name",
+      "tag": "Category",
+      "portrait": "https://via.placeholder.com/200",
+      "images": [
+        "https://via.placeholder.com/400",
+        "https://via.placeholder.com/400"
+      ],
+      "description": [
+        "This is a detailed description of the project. It can contain multiple paragraphs and explain what the project does, the technologies used, and the impact it had.",
+        "Additional context and information about the project can go here. You can describe challenges faced, solutions implemented, or key learnings."
+      ],
+      "links": [
+        {
+          "text": "View Project",
+          "url": "#"
+        },
+        {
+          "text": "GitHub",
+          "url": "#"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Project Name",
+      "tag": "Category",
+      "portrait": "https://via.placeholder.com/200",
+      "images": [
+        "https://via.placeholder.com/400"
+      ],
+      "description": [
+        "Another project description with different content. This demonstrates how flexible the detail component can be."
+      ],
+      "links": [
+        {
+          "text": "View Project",
+          "url": "#"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Project Name",
+      "tag": "Category",
+      "portrait": "https://via.placeholder.com/200",
+      "images": [
+        "https://via.placeholder.com/400",
+        "https://via.placeholder.com/400",
+        "https://via.placeholder.com/400"
+      ],
+      "description": [
+        "A third project with multiple images and detailed information."
+      ],
+      "links": [
+        {
+          "text": "View Project",
+          "url": "#"
+        },
+        {
+          "text": "Case Study",
+          "url": "#"
+        }
+      ]
+    }
+  ]
+}
+

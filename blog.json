@@ -1,0 +1,20 @@
+{
+  "posts": [
+    {
+      "title": "The Future of Decentralized Finance",
+      "date": "2024-01-15",
+      "url": "https://example.com/post1"
+    },
+    {
+      "title": "Building Scalable Systems",
+      "date": "2024-01-08",
+      "url": "https://example.com/post2"
+    },
+    {
+      "title": "Thoughts on Risk and Mathematics",
+      "date": "2024-01-01",
+      "url": "https://example.com/post3"
+    }
+  ]
+}
+
