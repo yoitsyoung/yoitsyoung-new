@@ -461,11 +461,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       
       // Generate project items
-      projects.forEach((project) => {
+      projects.forEach((project, index) => {
         // Create project item
         const projectItem = document.createElement('div');
         projectItem.className = 'project-item';
         projectItem.setAttribute('data-project-id', project.id);
+        projectItem.setAttribute('data-original-index', index.toString());
         
         // Create portrait
         const portrait = document.createElement('div');
@@ -566,6 +567,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Global variable to track expanded project (shared across all instances)
   let currentExpandedProjectItem = null;
   let clickOutsideHandlerAdded = false;
+  let hiddenProjectItems = []; // Store references to hidden items
 
   // Initialize project expand/collapse functionality
   function initializeProjectInteractions(container) {
@@ -598,21 +600,71 @@ document.addEventListener("DOMContentLoaded", () => {
             currentDetail = currentContainer?.querySelector(`.project-detail[data-detail-id="${detailId}"]`);
           }
           currentExpandedProjectItem.classList.remove("expanded");
-          // Reset grid position
-          currentExpandedProjectItem.style.gridRow = "";
-          currentExpandedProjectItem.style.gridColumn = "";
-          currentExpandedProjectItem.removeAttribute("data-grid-row");
-          currentExpandedProjectItem.removeAttribute("data-grid-column");
+          
           if (currentDetail) {
+            // Remove active class first to trigger fade out
             currentDetail.classList.remove("active");
-            // Move detail back to its original position
-            currentExpandedProjectItem.appendChild(currentDetail);
+            
+            // Wait for transition to complete before moving element back and resetting grid
+            setTimeout(() => {
+              if (!currentDetail.classList.contains("active")) {
+                currentExpandedProjectItem.appendChild(currentDetail);
+                // Reset grid position after detail is moved back
+                currentExpandedProjectItem.style.gridRow = "";
+                currentExpandedProjectItem.style.gridColumn = "";
+                currentExpandedProjectItem.removeAttribute("data-grid-row");
+                currentExpandedProjectItem.removeAttribute("data-grid-column");
+              }
+            }, 500);
+          } else {
+            // Reset grid position immediately if no detail
+            currentExpandedProjectItem.style.gridRow = "";
+            currentExpandedProjectItem.style.gridColumn = "";
+            currentExpandedProjectItem.removeAttribute("data-grid-row");
+            currentExpandedProjectItem.removeAttribute("data-grid-column");
           }
+          
           const currentContainer = currentExpandedProjectItem.closest(".projects-container");
           if (currentContainer) {
             currentContainer.classList.remove("has-expanded");
             currentContainer.classList.remove("has-single-expanded");
+            
+            // Restore hidden project items in their original order
             const currentPlaceholder = currentContainer.querySelector(".project-detail-placeholder");
+            
+            // Sort by original index to maintain order
+            hiddenProjectItems.sort((a, b) => a.originalIndex - b.originalIndex);
+            
+            hiddenProjectItems.forEach(({ element, originalIndex, parent }) => {
+              if (element && parent && !element.parentNode) {
+                // Find insertion point based on original index
+                const allItems = Array.from(currentContainer.querySelectorAll(".project-item"));
+                let insertBefore = null;
+                
+                for (const currentItem of allItems) {
+                  const currentIndex = parseInt(currentItem.getAttribute('data-original-index') || '9999', 10);
+                  if (currentIndex >= originalIndex) {
+                    insertBefore = currentItem;
+                    break;
+                  }
+                }
+                
+                if (!insertBefore) {
+                  if (currentPlaceholder && currentPlaceholder.parentNode === parent) {
+                    insertBefore = currentPlaceholder;
+                  } else {
+                    parent.appendChild(element);
+                    return;
+                  }
+                }
+                
+                if (insertBefore && insertBefore.parentNode === parent) {
+                  parent.insertBefore(element, insertBefore);
+                }
+              }
+            });
+            hiddenProjectItems = [];
+            
             if (currentPlaceholder) currentPlaceholder.style.display = "none";
           }
         }
@@ -627,17 +679,72 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           
           item.classList.remove("expanded");
-          // Reset grid position
-          item.style.gridRow = "";
-          item.style.gridColumn = "";
-          item.removeAttribute("data-grid-row");
-          item.removeAttribute("data-grid-column");
+          
           if (detailToCollapse) {
+            // Remove active class first to trigger fade out
             detailToCollapse.classList.remove("active");
-            item.appendChild(detailToCollapse);
+            
+            // Wait for transition to complete before moving element back and resetting grid
+            setTimeout(() => {
+              if (!detailToCollapse.classList.contains("active")) {
+                item.appendChild(detailToCollapse);
+                // Reset grid position after detail is moved back
+                item.style.gridRow = "";
+                item.style.gridColumn = "";
+                item.removeAttribute("data-grid-row");
+                item.removeAttribute("data-grid-column");
+              }
+            }, 500);
+          } else {
+            // Reset grid position immediately if no detail
+            item.style.gridRow = "";
+            item.style.gridColumn = "";
+            item.removeAttribute("data-grid-row");
+            item.removeAttribute("data-grid-column");
           }
+          
           container.classList.remove("has-expanded");
           container.classList.remove("has-single-expanded");
+          
+          // Restore hidden project items in their original order
+          const placeholder = container.querySelector(".project-detail-placeholder");
+          
+          // Sort by original index to maintain order
+          hiddenProjectItems.sort((a, b) => a.originalIndex - b.originalIndex);
+          
+          hiddenProjectItems.forEach(({ element, originalIndex, parent }) => {
+            if (element && parent && !element.parentNode) {
+              // Find insertion point: find the first item with originalIndex >= this item's originalIndex
+              const allItems = Array.from(container.querySelectorAll(".project-item"));
+              let insertBefore = null;
+              
+              for (const currentItem of allItems) {
+                const currentIndex = parseInt(currentItem.getAttribute('data-original-index') || '9999', 10);
+                if (currentIndex >= originalIndex) {
+                  insertBefore = currentItem;
+                  break;
+                }
+              }
+              
+              // If no item found, insert before placeholder or at end
+              if (!insertBefore) {
+                if (placeholder && placeholder.parentNode === parent) {
+                  insertBefore = placeholder;
+                } else {
+                  // Append to end
+                  parent.appendChild(element);
+                  return;
+                }
+              }
+              
+              // Insert before the found element
+              if (insertBefore && insertBefore.parentNode === parent) {
+                parent.insertBefore(element, insertBefore);
+              }
+            }
+          });
+          hiddenProjectItems = [];
+          
           if (placeholder) placeholder.style.display = "none";
           currentExpandedProjectItem = null;
         } else {
@@ -678,6 +785,9 @@ document.addEventListener("DOMContentLoaded", () => {
             detail.style.gridRow = row.toString();
             detail.style.gridColumn = detailColumn.toString();
             
+            // Remove active class to ensure clean state
+            detail.classList.remove("active");
+            
             // Insert the detail element appropriately based on column
             if (isLeftColumn) {
               // Left column item: detail goes to right column, insert after the item
@@ -691,9 +801,38 @@ document.addEventListener("DOMContentLoaded", () => {
               container.insertBefore(detail, item);
             }
             
-            detail.classList.add("active");
+            // Add container classes first to trigger fade out
             container.classList.add("has-expanded");
             container.classList.add("has-single-expanded");
+            
+            // Hide other project items by removing them from DOM after fade out
+            // Store references with their original index for proper restoration
+            hiddenProjectItems = [];
+            projectItems.forEach((otherItem, index) => {
+              if (otherItem !== item && !otherItem.classList.contains("expanded")) {
+                hiddenProjectItems.push({
+                  element: otherItem,
+                  originalIndex: index,
+                  parent: otherItem.parentNode
+                });
+                // Remove from DOM after fade out transition completes
+                setTimeout(() => {
+                  if (otherItem.parentNode && !otherItem.classList.contains("expanded")) {
+                    otherItem.remove();
+                  }
+                }, 400);
+              }
+            });
+            // Sort by original index to maintain order
+            hiddenProjectItems.sort((a, b) => a.originalIndex - b.originalIndex);
+            
+            // Force reflow to ensure initial state is applied
+            void detail.offsetHeight;
+            
+            // Add active class after a brief delay to trigger smooth animation
+            requestAnimationFrame(() => {
+              detail.classList.add("active");
+            });
           }
           currentExpandedProjectItem = item;
         }
@@ -718,18 +857,69 @@ document.addEventListener("DOMContentLoaded", () => {
               detail = container.querySelector(`.project-detail[data-detail-id="${detailId}"]`);
             }
             currentExpandedProjectItem.classList.remove("expanded");
-            // Reset grid position
-            currentExpandedProjectItem.style.gridRow = "";
-            currentExpandedProjectItem.style.gridColumn = "";
-            currentExpandedProjectItem.removeAttribute("data-grid-row");
-            currentExpandedProjectItem.removeAttribute("data-grid-column");
+            
             if (detail) {
+              // Remove active class first to trigger fade out
               detail.classList.remove("active");
-              currentExpandedProjectItem.appendChild(detail);
+              
+              // Wait for transition to complete before moving element back and resetting grid
+              setTimeout(() => {
+                if (!detail.classList.contains("active")) {
+                  currentExpandedProjectItem.appendChild(detail);
+                  // Reset grid position after detail is moved back
+                  currentExpandedProjectItem.style.gridRow = "";
+                  currentExpandedProjectItem.style.gridColumn = "";
+                  currentExpandedProjectItem.removeAttribute("data-grid-row");
+                  currentExpandedProjectItem.removeAttribute("data-grid-column");
+                }
+              }, 500);
+            } else {
+              // Reset grid position immediately if no detail
+              currentExpandedProjectItem.style.gridRow = "";
+              currentExpandedProjectItem.style.gridColumn = "";
+              currentExpandedProjectItem.removeAttribute("data-grid-row");
+              currentExpandedProjectItem.removeAttribute("data-grid-column");
             }
+            
             container.classList.remove("has-expanded");
             container.classList.remove("has-single-expanded");
+            
+            // Restore hidden project items in their original order
             const placeholder = container.querySelector(".project-detail-placeholder");
+            
+            // Sort by original index to maintain order
+            hiddenProjectItems.sort((a, b) => a.originalIndex - b.originalIndex);
+            
+            hiddenProjectItems.forEach(({ element, originalIndex, parent }) => {
+              if (element && parent && !element.parentNode) {
+                // Find insertion point based on original index
+                const allItems = Array.from(container.querySelectorAll(".project-item"));
+                let insertBefore = null;
+                
+                for (const currentItem of allItems) {
+                  const currentIndex = parseInt(currentItem.getAttribute('data-original-index') || '9999', 10);
+                  if (currentIndex >= originalIndex) {
+                    insertBefore = currentItem;
+                    break;
+                  }
+                }
+                
+                if (!insertBefore) {
+                  if (placeholder && placeholder.parentNode === parent) {
+                    insertBefore = placeholder;
+                  } else {
+                    parent.appendChild(element);
+                    return;
+                  }
+                }
+                
+                if (insertBefore && insertBefore.parentNode === parent) {
+                  parent.insertBefore(element, insertBefore);
+                }
+              }
+            });
+            hiddenProjectItems = [];
+            
             if (placeholder) placeholder.style.display = "none";
             currentExpandedProjectItem = null;
           }
