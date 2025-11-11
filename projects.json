@@ -2,62 +2,127 @@
   "projects": [
     {
       "id": 1,
-      "title": "Project Name",
+      "title": "Outpost",
       "tag": "Category",
-      "portrait": "https://via.placeholder.com/200",
+      "portrait": "./images/projects/Outpost/outpost_logo_only.png",
       "images": [
-        "https://via.placeholder.com/400",
-        "https://via.placeholder.com/400"
+        "./images/projects/Outpost/Outpost.png",
+        "./images/projects/Outpost/iphone_outpost.png",
+        "./images/projects/Outpost/Wireframe - 2.png"
       ],
-      "description": [
-        "This is a detailed description of the project. It can contain multiple paragraphs and explain what the project does, the technologies used, and the impact it had.",
-        "Additional context and information about the project can go here. You can describe challenges faced, solutions implemented, or key learnings."
+      "description": [  
+        "A paid media netowrk for AI search, where brands can buy mentions in AI search results, and publishers can monetize traffic from AI scraping."
       ],
       "links": [
         {
-          "text": "View Project",
-          "url": "#"
-        },
-        {
-          "text": "GitHub",
-          "url": "#"
+          "text": "Link",
+          "url": "https://tryoutpost.xyz"
         }
       ]
     },
     {
       "id": 2,
-      "title": "Project Name",
+      "title": "Levia",
       "tag": "Category",
-      "portrait": "https://via.placeholder.com/200",
+      "portrait": "./images/projects/Levia/landing.png",
       "images": [
-        "https://via.placeholder.com/400"
+        "./images/projects/Levia/landing.png",
+        "./images/projects/Levia/imperial.png"
       ],
       "description": [
-        "Another project description with different content. This demonstrates how flexible the detail component can be."
+        "A tool ochestration framework for AI agents. We make it easy to build and deploy AI agents with connectors to APIs such as on social media, and trained an RL process over optimized workflows. Hackathons with Imperial and Cambridge"
       ],
       "links": [
         {
-          "text": "View Project",
+          "text": "Website",
+          "url": "https://levia.us"
+        },
+        {
+          "text": "Gitbook",
+          "url": "#"
+        },
+        {
+          "text": "Github",
           "url": "#"
         }
       ]
     },
     {
       "id": 3,
-      "title": "Project Name",
+      "title": "Competitions.fyi",
       "tag": "Category",
-      "portrait": "https://via.placeholder.com/200",
+      "portrait": "./images/projects/Competitions-fyi/landing.png",
       "images": [
-        "https://via.placeholder.com/400",
-        "https://via.placeholder.com/400",
-        "https://via.placeholder.com/400"
+        "./images/projects/Competitions-fyi/landing.png"
+      ],
+      "description": [
+"College competitions aggregator with notifications and crowdsourcing. Automated with Exa Search and Claude."      ],
+      "links": [
+        {
+          "text": "Link",
+          "url": "https://competitions.fyi"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Friendzone",
+      "tag": "Category",
+      "portrait": "./images/projects/Friendzone/landing.png",
+      "images": [
+        "./images/projects/Friendzone/landing.png",
+        "./images/projects/Friendzone/mobile.png"
+      ],
+      "description": [
+        "A telegram bot that helps you tokenize group chat memberships. Easily spin up a DAO over Telegram. Written in Typescript & TactC"
+      ],
+      "links": [
+        {
+          "text": "Gitbook",
+          "url": "#"
+        },
+        {
+          "text": "Deck",
+          "url": "#"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Syntil",
+      "tag": "Category",
+      "portrait": "./images/projects/Syntil/landing.png",
+      "images": [
+        "./images/projects/Syntil/landing.png"
       ],
       "description": [
         "A third project with multiple images and detailed information."
       ],
       "links": [
         {
-          "text": "View Project",
+          "text": "Gitbook",
+          "url": "#"
+        },
+        {
+          "text": "Case Study",
+          "url": "#"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Superlancers",
+      "tag": "Category",
+      "portrait": "./images/projects/Superlancers/landing.png",
+      "images": [
+        "./images/projects/Superlancers/landing.png"
+      ],
+      "description": [
+        "A gig marketplace for freelancers to find work with verifiable on-chain credentials. Winner of the Gateway.FM challenge at ETH London."
+      ],
+      "links": [
+        {
+          "text": "Gitbook",
           "url": "#"
         },
         {

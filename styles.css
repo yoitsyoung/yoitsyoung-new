@@ -471,6 +471,45 @@ body {
   opacity: 0.6;
 }
 
+/* Hide all non-expanded project items when one is expanded */
+.projects-container.has-single-expanded .project-item:not(.expanded) {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transform: scale(0.9) translateY(-20px);
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  z-index: 0;
+  /* Remove from grid flow when hidden - use display: none after transition */
+  height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure expanded project and its detail remain visible */
+.projects-container.has-single-expanded .project-item.expanded {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  height: auto;
+  overflow: visible;
+  /* Grid position is set via inline styles from JavaScript */
+}
+
+.projects-container.has-single-expanded .project-detail.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Adjust grid layout when only one project is expanded */
+.projects-container.has-single-expanded {
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+}
+
 .project-portrait {
   width: 100%;
   aspect-ratio: 1;
@@ -534,6 +573,15 @@ body {
 }
 
 .project-detail[data-column="right"] {
+  grid-column: 2;
+}
+
+/* When a single project is expanded, ensure detail positioning works correctly */
+.projects-container.has-single-expanded .project-detail[data-column="left"] {
+  grid-column: 1;
+}
+
+.projects-container.has-single-expanded .project-detail[data-column="right"] {
   grid-column: 2;
 }
 

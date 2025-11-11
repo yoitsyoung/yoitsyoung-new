@@ -598,6 +598,11 @@ document.addEventListener("DOMContentLoaded", () => {
             currentDetail = currentContainer?.querySelector(`.project-detail[data-detail-id="${detailId}"]`);
           }
           currentExpandedProjectItem.classList.remove("expanded");
+          // Reset grid position
+          currentExpandedProjectItem.style.gridRow = "";
+          currentExpandedProjectItem.style.gridColumn = "";
+          currentExpandedProjectItem.removeAttribute("data-grid-row");
+          currentExpandedProjectItem.removeAttribute("data-grid-column");
           if (currentDetail) {
             currentDetail.classList.remove("active");
             // Move detail back to its original position
@@ -606,6 +611,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const currentContainer = currentExpandedProjectItem.closest(".projects-container");
           if (currentContainer) {
             currentContainer.classList.remove("has-expanded");
+            currentContainer.classList.remove("has-single-expanded");
             const currentPlaceholder = currentContainer.querySelector(".project-detail-placeholder");
             if (currentPlaceholder) currentPlaceholder.style.display = "none";
           }
@@ -621,11 +627,17 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           
           item.classList.remove("expanded");
+          // Reset grid position
+          item.style.gridRow = "";
+          item.style.gridColumn = "";
+          item.removeAttribute("data-grid-row");
+          item.removeAttribute("data-grid-column");
           if (detailToCollapse) {
             detailToCollapse.classList.remove("active");
             item.appendChild(detailToCollapse);
           }
           container.classList.remove("has-expanded");
+          container.classList.remove("has-single-expanded");
           if (placeholder) placeholder.style.display = "none";
           currentExpandedProjectItem = null;
         } else {
@@ -640,43 +652,48 @@ document.addEventListener("DOMContentLoaded", () => {
           // In a 2-column grid: even indices (0, 2, 4...) are left column, odd (1, 3, 5...) are right column
           const isLeftColumn = itemIndex % 2 === 0;
           
+          // Calculate the grid row and column positions (1-indexed for CSS Grid)
+          const row = Math.floor(itemIndex / 2) + 1;
+          const column = isLeftColumn ? 1 : 2;
+          
+          // Lock the expanded item's position in the grid using inline styles
+          item.style.gridRow = row.toString();
+          item.style.gridColumn = column.toString();
+          item.setAttribute("data-grid-row", row.toString());
+          item.setAttribute("data-grid-column", column.toString());
           item.classList.add("expanded");
+          
           if (detail) {
             // Remove detail from item first
             detail.remove();
             
-            // Determine target column (opposite of item's column)
-            const targetColumn = isLeftColumn ? "right" : "left";
-            detail.setAttribute("data-column", targetColumn);
+            // Place detail in the opposite column of the expanded item
+            // Left column (1) -> detail goes to right (2), Right column (2) -> detail goes to left (1)
+            const detailColumn = isLeftColumn ? 2 : 1;
+            const detailColumnName = isLeftColumn ? "right" : "left";
             
-            // Calculate the grid row position (1-indexed for CSS Grid)
-            const row = Math.floor(itemIndex / 2) + 1;
+            detail.setAttribute("data-column", detailColumnName);
             detail.setAttribute("data-row", row.toString());
+            // Set explicit grid position for the detail
+            detail.style.gridRow = row.toString();
+            detail.style.gridColumn = detailColumn.toString();
             
-            // Insert the detail element into the container
-            // We'll let CSS Grid handle the positioning via data-column attribute
+            // Insert the detail element appropriately based on column
             if (isLeftColumn) {
-              // Left column item: detail goes to right column of same row
-              const nextIndex = itemIndex + 1;
-              if (nextIndex < projectItems.length) {
-                // Insert after the right column item in the same row
-                container.insertBefore(detail, projectItems[nextIndex].nextSibling);
+              // Left column item: detail goes to right column, insert after the item
+              if (item.nextSibling) {
+                container.insertBefore(detail, item.nextSibling);
               } else {
-                // No right column item, append after current item
-                if (item.nextSibling) {
-                  container.insertBefore(detail, item.nextSibling);
-                } else {
-                  container.appendChild(detail);
-                }
+                container.appendChild(detail);
               }
             } else {
-              // Right column item: detail goes to left column of same row
-              // Insert before the current item
+              // Right column item: detail goes to left column, insert before the item
               container.insertBefore(detail, item);
             }
             
             detail.classList.add("active");
             container.classList.add("has-expanded");
+            container.classList.add("has-single-expanded");
           }
           currentExpandedProjectItem = item;
         }
@@ -701,11 +718,17 @@ document.addEventListener("DOMContentLoaded", () => {
               detail = container.querySelector(`.project-detail[data-detail-id="${detailId}"]`);
             }
             currentExpandedProjectItem.classList.remove("expanded");
+            // Reset grid position
+            currentExpandedProjectItem.style.gridRow = "";
+            currentExpandedProjectItem.style.gridColumn = "";
+            currentExpandedProjectItem.removeAttribute("data-grid-row");
+            currentExpandedProjectItem.removeAttribute("data-grid-column");
             if (detail) {
               detail.classList.remove("active");
               currentExpandedProjectItem.appendChild(detail);
             }
             container.classList.remove("has-expanded");
+            container.classList.remove("has-single-expanded");
             const placeholder = container.querySelector(".project-detail-placeholder");
             if (placeholder) placeholder.style.display = "none";
             currentExpandedProjectItem = null;
