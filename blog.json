@@ -1,20 +1,44 @@
 {
   "posts": [
     {
-      "title": "The Future of Decentralized Finance",
-      "date": "2024-01-15",
-      "url": "https://example.com/post1"
+      "title": "Product, Taste, Society. Notes from Granola",
+      "date": "2025-08-18",
+      "url": "https://yoitsyoung.xyz/2025/08/18/Design-&-Culture-Notes-From-Granola.html"
     },
     {
-      "title": "Building Scalable Systems",
-      "date": "2024-01-08",
-      "url": "https://example.com/post2"
+      "title": "What are \"The Trenches\"? Buying into Tokenized Attention.",
+      "date": "2024-12-19",
+      "url": "https://medium.com/@yoyoitsyoung/what-are-the-trenches-buying-into-tokenized-attention-7c7dd0563a19"
     },
     {
-      "title": "Thoughts on Risk and Mathematics",
-      "date": "2024-01-01",
-      "url": "https://example.com/post3"
+      "title": "Crypto is Dead, Long Live Crypto",
+      "date": "2023-12-12",
+      "url": "https://mirror.xyz/0x62Bd9d8f8479FBCf267e206390441D864355106B/5kvrW5LO0Mh7mG-jZBDTAG0aGQ_wT2Sag_pK0nGdn-A"
+    },
+    {
+      "title": "Opportunities in Machine Learning & Econometrics",
+      "date": "2023-08-24",
+      "url": "https://yoitsyoung.xyz/2023/08/24/machine-learning-and-econometrics.html"
+    },
+    {
+      "title": "KTX -- Decentralized Futures is Still a Trillion Dollar Opportunity",
+      "date": "2023-06-05",
+      "url": "https://webthreecon.substack.com/p/decentralized-futures-is-still-a"
+    },
+    {
+      "title": "Panoptic -- Solving DeFi's perennial option problem",
+      "date": "2022-12-06",
+      "url": "https://webthreecon.substack.com/p/panoptic-solving-defis-perennial"
+    },
+    {
+      "title": "6 Points; A Thesis for TreasureDAO",
+      "date": "2022-02-16",
+      "url": "https://webthreecon.substack.com/p/6-points-a-thesis-for-treasuredao"
+    },
+    {
+      "title": "An Outsiders' Guide to Breaking into Web3.0",
+      "date": "2022-02-08",
+      "url": "https://mirror.xyz/yoitsyoung.eth/OETTgaAwNmogDnEifbnh-cnXzi6vpVDqXm-0YFYi_Lc"
     }
   ]
 }
-
