@@ -36,6 +36,48 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Text rewrite typewriter effect
+  // Mobile detection helper
+  const isMobile = () => {
+    return window.matchMedia && window.matchMedia("(max-width: 767px)").matches;
+  };
+  
+  // Helper function to reverse typewriter for any link (used for mobile tap handling)
+  const reverseForLink = (targetLink) => {
+    const targetHoverSpan = targetLink.querySelector(".text-hover");
+    if (!targetHoverSpan || !targetHoverSpan.textContent) return;
+    
+    // Get the timeout ID stored on the link
+    const targetTimeoutId = targetLink._timeoutId;
+    if (targetTimeoutId) clearTimeout(targetTimeoutId);
+    
+    const currentText = targetHoverSpan.textContent;
+    let i = currentText.length;
+    
+    const reverse = () => {
+      if (i >= 0) {
+        targetHoverSpan.textContent = currentText.substring(0, i);
+        
+        const temp = document.createElement("span");
+        temp.style.visibility = "hidden";
+        temp.style.position = "absolute";
+        temp.style.font = window.getComputedStyle(targetLink).font;
+        temp.textContent = targetHoverSpan.textContent;
+        document.body.appendChild(temp);
+        const width = temp.offsetWidth;
+        document.body.removeChild(temp);
+        
+        targetHoverSpan.style.width = `${width}px`;
+        i--;
+        targetLink._timeoutId = setTimeout(reverse, 25);
+      } else {
+        targetHoverSpan.style.width = "0px";
+        targetLink._timeoutId = null;
+      }
+    };
+    
+    reverse();
+  };
+  
   document.querySelectorAll(".text-rewrite").forEach((link) => {
     const originalText = link.textContent.trim();
     const hoverText = link.getAttribute("data-hover") || "";
@@ -44,7 +86,34 @@ document.addEventListener("DOMContentLoaded", () => {
     link.innerHTML = `<span class="text-content">${originalText}</span><span class="text-hover"></span>`;
     
     const hoverSpan = link.querySelector(".text-hover");
+    const contentSpan = link.querySelector(".text-content");
     
+    // Calculate and set fixed width to prevent layout shift
+    // Measure both original and hover text to get the maximum width
+    const temp = document.createElement("span");
+    temp.style.visibility = "hidden";
+    temp.style.position = "absolute";
+    temp.style.font = window.getComputedStyle(link).font;
+    temp.style.whiteSpace = "nowrap";
+    
+    // Measure original text width
+    temp.textContent = originalText;
+    document.body.appendChild(temp);
+    const originalWidth = temp.offsetWidth;
+    
+    // Measure hover text width
+    temp.textContent = hoverText || originalText;
+    const hoverWidth = temp.offsetWidth;
+    
+    document.body.removeChild(temp);
+    
+    // Set fixed width to the maximum of both widths to prevent layout shift
+    const maxWidth = Math.max(originalWidth, hoverWidth);
+    link.style.width = `${maxWidth}px`;
+    link.style.minWidth = `${maxWidth}px`;
+    
+    // Store timeout ID on the link element for cleanup
+    link._timeoutId = null;
     let isAnimating = false;
     let timeoutId = null;
     
@@ -73,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
           
           i++;
           // Add slight randomness for organic feel (20-50ms per character)
-          timeoutId = setTimeout(type, speed + Math.random() * 30);
+          link._timeoutId = timeoutId = setTimeout(type, speed + Math.random() * 30);
         } else {
           isAnimating = false;
         }
@@ -106,10 +175,11 @@ document.addEventListener("DOMContentLoaded", () => {
           hoverSpan.style.width = `${width}px`;
           
           i--;
-          timeoutId = setTimeout(reverse, speed);
+          link._timeoutId = timeoutId = setTimeout(reverse, speed);
         } else {
           hoverSpan.style.width = "0px";
           isAnimating = false;
+          link._timeoutId = null;
         }
       };
       
@@ -125,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
       
-      if (timeoutId) clearTimeout(timeoutId);
+      if (link._timeoutId) clearTimeout(link._timeoutId);
       hoverSpan.style.width = "0px";
       hoverSpan.textContent = "";
       setTimeout(() => {
@@ -142,9 +212,118 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
       
-      if (timeoutId) clearTimeout(timeoutId);
+      // Don't hide on mobile if tapped
+      if (link.classList.contains("tapped")) {
+        return;
+      }
+      
+      if (link._timeoutId) clearTimeout(link._timeoutId);
       reverseTypeWriter(25);
     });
+    
+    // Mobile touch/click handling to keep hover text visible
+    if (isMobile()) {
+      link.addEventListener('click', (e) => {
+        // Handle blog-trigger and projects-trigger: prevent navigation and show showcase
+        if (link.classList.contains('blog-trigger')) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const blogShowcase = document.querySelector(".blog-showcase");
+          const section = document.querySelector(".section");
+          
+          if (blogShowcase && section) {
+            // Close projects if open
+            section.classList.remove("projects-active");
+            document.querySelector(".projects-showcase")?.classList.remove("active");
+            
+            // Toggle blog showcase
+            const isActive = blogShowcase.classList.contains("active");
+            if (isActive) {
+              section.classList.remove("blog-active");
+              blogShowcase.classList.remove("active");
+            } else {
+              section.classList.add("blog-active");
+              blogShowcase.classList.add("active");
+            }
+          }
+        } else if (link.classList.contains('projects-trigger')) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const projectsShowcase = document.querySelector(".projects-showcase");
+          const section = document.querySelector(".section");
+          
+          if (projectsShowcase && section) {
+            // Close blog if open
+            section.classList.remove("blog-active");
+            document.querySelector(".blog-showcase")?.classList.remove("active");
+            
+            // Toggle projects showcase
+            const isActive = projectsShowcase.classList.contains("active");
+            if (isActive) {
+              section.classList.remove("projects-active");
+              projectsShowcase.classList.remove("active");
+            } else {
+              section.classList.add("projects-active");
+              projectsShowcase.classList.add("active");
+              
+              // Load projects if not already loaded (they should be preloaded, but just in case)
+              const projectsContainer = projectsShowcase.querySelector(".projects-container");
+              if (projectsContainer && projectsContainer.querySelectorAll(".project-item").length === 0) {
+                // Projects should already be loaded on page load, but trigger load if empty
+                // loadProjects is defined later but function declarations are hoisted
+                if (typeof loadProjects === 'function') {
+                  loadProjects();
+                }
+              }
+            }
+          }
+        }
+        
+        // Toggle tapped state for text rewrite effect
+        const wasTapped = link.classList.contains('tapped');
+        
+        // Remove tapped from all other links and hide their hover text
+        document.querySelectorAll('.text-rewrite.tapped').forEach(otherLink => {
+          if (otherLink !== link) {
+            otherLink.classList.remove('tapped');
+            reverseForLink(otherLink);
+          }
+        });
+        
+        if (wasTapped) {
+          // Untap: hide hover text
+          link.classList.remove('tapped');
+          if (link._timeoutId) clearTimeout(link._timeoutId);
+          reverseTypeWriter(25);
+        } else {
+          // Tap: show hover text and keep it visible
+          link.classList.add('tapped');
+          if (!hoverSpan.textContent) {
+            if (link._timeoutId) clearTimeout(link._timeoutId);
+            hoverSpan.style.width = "0px";
+            hoverSpan.textContent = "";
+            setTimeout(() => {
+              typeWriter(hoverText, 35);
+            }, 50);
+          }
+        }
+      });
+      
+      // Remove tapped state when clicking outside (only add listener once)
+      if (!document._mobileTapHandlerAdded) {
+        document.addEventListener('click', (e) => {
+          if (!e.target.closest('.text-rewrite')) {
+            document.querySelectorAll('.text-rewrite.tapped').forEach(tappedLink => {
+              tappedLink.classList.remove('tapped');
+              reverseForLink(tappedLink);
+            });
+          }
+        });
+        document._mobileTapHandlerAdded = true;
+      }
+    }
   });
 
   // Load and render blog posts from JSON

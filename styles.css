@@ -229,8 +229,9 @@ body.loaded .text-link {
   
   .text-rewrite.tapped .text-hover {
     opacity: 1;
-    width: auto !important;
-    position: static !important;
+    /* Keep absolute positioning to prevent layout shift */
+    position: absolute !important;
+    /* Ensure width is set properly by JavaScript */
   }
   
   /* Blog trigger: Remove tap highlight */
@@ -274,13 +275,16 @@ body.loaded .text-link {
 .text-rewrite {
   position: relative;
   display: inline-block;
-  overflow: hidden;
+  overflow: visible;
   transition: none;
+  /* Prevent layout shift by ensuring hover text doesn't affect width */
+  vertical-align: baseline;
 }
 
 .text-rewrite .text-content {
   display: inline-block;
   transition: opacity 0.15s ease;
+  white-space: nowrap;
 }
 
 .text-rewrite .text-hover {
@@ -299,6 +303,8 @@ body.loaded .text-link {
   transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
               color 1s cubic-bezier(0.16, 1, 0.3, 1),
               text-decoration-color 1s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Ensure hover text doesn't affect parent width */
+  pointer-events: none;
 }
 
 body.loaded .text-rewrite .text-hover {
