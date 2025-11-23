@@ -29,6 +29,12 @@
   --text-secondary: #8f9195;
   --divider: #131313;
   --hover-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  
+  /* Initial white state */
+  --initial-bg: #ffffff;
+  --initial-text-primary: #000000;
+  --initial-text-secondary: #333333;
+  --initial-divider: #e0e0e0;
 }
 
 * {
@@ -38,12 +44,19 @@
 body {
   min-height: 100vh;
   margin: 0;
-  background-color: var(--page-bg);
-  color: var(--text-secondary);
+  background-color: var(--initial-bg);
+  color: var(--initial-text-secondary);
   font-family: "Recia", Arial, sans-serif;
   font-size: 14px;
   line-height: 1.45;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 1s cubic-bezier(0.16, 1, 0.3, 1),
+              color 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.loaded {
+  background-color: var(--page-bg);
+  color: var(--text-secondary);
 }
 
 .page {
@@ -62,9 +75,32 @@ body {
   padding-right: 48vw;
 }
 
+/* Header section animation - first div-block-4 */
+.div-block-4:first-of-type {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: slideUpFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+}
+
+@keyframes slideUpFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .div-block-5 {
   width: 100%;
   height: 1px;
+  background-color: var(--initial-divider);
+  transition: background-color 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.loaded .div-block-5 {
   background-color: var(--divider);
 }
 
@@ -81,8 +117,12 @@ body {
 
 .text-font {
   font-family: "Recia", Arial, sans-serif;
+  color: var(--initial-text-secondary);
+  transition: color 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.loaded .text-font {
   color: var(--text-secondary);
-  transition: color 250ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .text-font:hover,
@@ -93,18 +133,30 @@ body {
 .text-header {
   font-size: clamp(2.25rem, 1.75rem + 0.75vw, 2.375rem);
   line-height: 1.16;
-  color: var(--text-primary);
+  color: var(--initial-text-primary);
   margin: 0;
+  transition: color 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.loaded .text-header {
+  color: var(--text-primary);
 }
 
 .text-link {
   font-family: "Recia", Arial, sans-serif;
-  color: var(--text-primary);
+  color: var(--initial-text-primary);
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-decoration-color: rgba(255, 255, 255, 0.85);
+  text-decoration-color: rgba(0, 0, 0, 0.85);
   text-underline-offset: 4px;
-  transition: opacity 200ms ease;
+  transition: color 1s cubic-bezier(0.16, 1, 0.3, 1),
+              text-decoration-color 1s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 200ms ease;
+}
+
+body.loaded .text-link {
+  color: var(--text-primary);
+  text-decoration-color: rgba(255, 255, 255, 0.85);
 }
 
 .text-link:hover,
@@ -239,7 +291,19 @@ body {
   overflow: hidden;
   white-space: nowrap;
   opacity: 0;
-  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--initial-text-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(0, 0, 0, 0.85);
+  text-underline-offset: 4px;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              color 1s cubic-bezier(0.16, 1, 0.3, 1),
+              text-decoration-color 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.loaded .text-rewrite .text-hover {
+  color: var(--text-primary);
+  text-decoration-color: rgba(255, 255, 255, 0.85);
 }
 
 .text-rewrite:hover .text-content {
@@ -337,8 +401,13 @@ body {
 
 .blog-post-title {
   font-family: "Recia", Arial, sans-serif;
-  color: var(--text-secondary);
+  color: var(--initial-text-secondary);
   font-size: 14px;
+  transition: color 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.loaded .blog-post-title {
+  color: var(--text-secondary);
   transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -348,11 +417,16 @@ body {
 
 .blog-post-date {
   font-family: "Recia", Arial, sans-serif;
-  color: var(--text-secondary);
+  color: var(--initial-text-secondary);
   font-size: 12px;
   opacity: 0.6;
   margin-left: 24px;
   white-space: nowrap;
+  transition: color 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.loaded .blog-post-date {
+  color: var(--text-secondary);
 }
 
 .projects-showcase {
@@ -513,11 +587,16 @@ body {
   border-radius: 16px;
   background-size: cover;
   background-position: center;
-  background-color: var(--divider);
+  background-color: var(--initial-divider);
   margin-bottom: 12px;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+  transition: background-color 1s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
               box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+body.loaded .project-portrait {
+  background-color: var(--divider);
 }
 
 .project-item:hover .project-portrait {
@@ -533,16 +612,26 @@ body {
 
 .project-title {
   font-family: "Recia", Arial, sans-serif;
-  color: var(--text-primary);
+  color: var(--initial-text-primary);
   font-size: 14px;
+  transition: color 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.loaded .project-title {
+  color: var(--text-primary);
   transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .project-tag {
   font-family: "Recia", Arial, sans-serif;
-  color: var(--text-secondary);
+  color: var(--initial-text-secondary);
   font-size: 12px;
   opacity: 0.7;
+  transition: color 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.loaded .project-tag {
+  color: var(--text-secondary);
 }
 
 .project-item:not(.expanded):hover .project-title {
@@ -643,8 +732,13 @@ body {
   border-radius: 12px;
   background-size: cover;
   background-position: center;
-  background-color: var(--divider);
+  background-color: var(--initial-divider);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: background-color 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.loaded .project-detail-image {
+  background-color: var(--divider);
 }
 
 .project-detail-text {
@@ -653,10 +747,15 @@ body {
 
 .project-description {
   font-family: "Recia", Arial, sans-serif;
-  color: var(--text-secondary);
+  color: var(--initial-text-primary);
   font-size: 14px;
   line-height: 1.6;
   margin: 0 0 16px 0;
+  transition: color 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.loaded .project-description {
+  color: var(--text-primary);
 }
 
 .project-description:last-child {
@@ -671,13 +770,20 @@ body {
 
 .project-link {
   font-family: "Recia", Arial, sans-serif;
-  color: var(--text-primary);
+  color: var(--initial-text-primary);
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-decoration-color: rgba(255, 255, 255, 0.85);
+  text-decoration-color: rgba(0, 0, 0, 0.85);
   text-underline-offset: 4px;
   font-size: 14px;
-  transition: opacity 0.2s ease;
+  transition: color 1s cubic-bezier(0.16, 1, 0.3, 1),
+              text-decoration-color 1s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.2s ease;
+}
+
+body.loaded .project-link {
+  color: var(--text-primary);
+  text-decoration-color: rgba(255, 255, 255, 0.85);
 }
 
 .project-link:hover {

@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Trigger white-to-dark transition after a brief delay to show initial white state
+  setTimeout(() => {
+    document.body.classList.add("loaded");
+  }, 300);
+  
   document.querySelectorAll(".hover-inline").forEach((item) => {
     const img = item.querySelector(".hover-image");
     if (!img) return;
