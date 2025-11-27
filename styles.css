@@ -353,7 +353,7 @@ body.loaded .text-rewrite .text-hover {
 }
 
 .blog-showcase.active {
-  max-height: 500px;
+  max-height: 2000px;
   opacity: 1;
   transform: translateY(0);
   margin: 24px auto;
