@@ -96,7 +96,7 @@
         "./images/projects/Syntil/landing.png"
       ],
       "description": [
-        ""
+        "Pull-based Bitcoin oracle system to transmit off-chain data onto Bitcoin script atomically"
       ],
       "links": [
         {
