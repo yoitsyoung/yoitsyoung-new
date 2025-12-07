@@ -78,12 +78,12 @@
       ],
       "links": [
         {
-          "text": "Gitbook",
-          "url": "#"
+          "text": "Github",
+          "url": "https://github.com/yoitsyoung/friend-zone-mock"
         },
         {
           "text": "Deck",
-          "url": "#"
+          "url": "https://pitch.com/v/friendzone-3h2xi9"
         }
       ]
     },
@@ -96,16 +96,16 @@
         "./images/projects/Syntil/landing.png"
       ],
       "description": [
-        "A third project with multiple images and detailed information."
+        ""
       ],
       "links": [
         {
           "text": "Gitbook",
-          "url": "#"
+          "url": "https://syntil.gitbook.io/syntil/"
         },
         {
-          "text": "Case Study",
-          "url": "#"
+          "text": "Deck",
+          "url": "https://pitch.com/v/syntil-7wfsyi"
         }
       ]
     },
@@ -122,12 +122,8 @@
       ],
       "links": [
         {
-          "text": "Gitbook",
-          "url": "#"
-        },
-        {
-          "text": "Case Study",
-          "url": "#"
+          "text": "Website",
+          "url": "https://superlancers-ruiyigan.vercel.app/"
         }
       ]
     }
