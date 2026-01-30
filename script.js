@@ -421,30 +421,33 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 200);
     };
     
-    blogTrigger.addEventListener("mouseenter", () => {
-      hoverTimeout = setTimeout(showBlogShowcase, 300);
-    });
-    
-    blogTrigger.addEventListener("mouseleave", hideBlogShowcase);
-    
-    // Keep showcase open when hovering over it
-    blogShowcase.addEventListener("mouseenter", () => {
-      if (hoverTimeout) {
-        clearTimeout(hoverTimeout);
-        hoverTimeout = null;
-      }
-      if (leaveTimeout) {
-        clearTimeout(leaveTimeout);
-        leaveTimeout = null;
-      }
-      section.classList.add("blog-active");
-      blogShowcase.classList.add("active");
-    });
-    
-    blogShowcase.addEventListener("mouseleave", () => {
-      section.classList.remove("blog-active");
-      blogShowcase.classList.remove("active");
-    });
+    // Only add hover handlers on desktop - mobile uses click-to-toggle
+    if (!isMobile()) {
+      blogTrigger.addEventListener("mouseenter", () => {
+        hoverTimeout = setTimeout(showBlogShowcase, 300);
+      });
+
+      blogTrigger.addEventListener("mouseleave", hideBlogShowcase);
+
+      // Keep showcase open when hovering over it
+      blogShowcase.addEventListener("mouseenter", () => {
+        if (hoverTimeout) {
+          clearTimeout(hoverTimeout);
+          hoverTimeout = null;
+        }
+        if (leaveTimeout) {
+          clearTimeout(leaveTimeout);
+          leaveTimeout = null;
+        }
+        section.classList.add("blog-active");
+        blogShowcase.classList.add("active");
+      });
+
+      blogShowcase.addEventListener("mouseleave", () => {
+        section.classList.remove("blog-active");
+        blogShowcase.classList.remove("active");
+      });
+    }
   }
 
   // Projects showcase toggle with content transformation
@@ -529,79 +532,82 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 200);
     };
     
-    projectsTrigger.addEventListener("mouseenter", (e) => {
-      e.stopPropagation();
-      const now = Date.now();
-      
-      // Debounce: ignore if too soon after last leave
-      if (now - lastMouseLeaveTime < DEBOUNCE_DELAY) {
-        return;
-      }
-      
-      lastMouseEnterTime = now;
-      
-      if (!isShowing && !projectsShowcase.classList.contains("active") && !isHiding) {
+    // Only add hover handlers on desktop - mobile uses click-to-toggle
+    if (!isMobile()) {
+      projectsTrigger.addEventListener("mouseenter", (e) => {
+        e.stopPropagation();
+        const now = Date.now();
+
+        // Debounce: ignore if too soon after last leave
+        if (now - lastMouseLeaveTime < DEBOUNCE_DELAY) {
+          return;
+        }
+
+        lastMouseEnterTime = now;
+
+        if (!isShowing && !projectsShowcase.classList.contains("active") && !isHiding) {
+          if (hoverTimeout) {
+            clearTimeout(hoverTimeout);
+          }
+          hoverTimeout = setTimeout(showProjectsShowcase, 300);
+        }
+      }, { passive: true });
+
+      projectsTrigger.addEventListener("mouseleave", (e) => {
+        e.stopPropagation();
+        const now = Date.now();
+
+        // Debounce: ignore if too soon after last enter
+        if (now - lastMouseEnterTime < DEBOUNCE_DELAY) {
+          return;
+        }
+
+        lastMouseLeaveTime = now;
+
         if (hoverTimeout) {
           clearTimeout(hoverTimeout);
+          hoverTimeout = null;
         }
-        hoverTimeout = setTimeout(showProjectsShowcase, 300);
-      }
-    }, { passive: true });
-    
-    projectsTrigger.addEventListener("mouseleave", (e) => {
-      e.stopPropagation();
-      const now = Date.now();
-      
-      // Debounce: ignore if too soon after last enter
-      if (now - lastMouseEnterTime < DEBOUNCE_DELAY) {
-        return;
-      }
-      
-      lastMouseLeaveTime = now;
-      
-      if (hoverTimeout) {
-        clearTimeout(hoverTimeout);
-        hoverTimeout = null;
-      }
-      
-      // Check if mouse is moving to showcase area
-      const relatedTarget = e.relatedTarget;
-      if (relatedTarget && projectsShowcase.contains(relatedTarget)) {
-        return; // Mouse is moving to showcase, don't hide
-      }
-      
-      hideProjectsShowcase();
-    }, { passive: true });
-    
-    // Keep showcase open when hovering over it
-    projectsShowcase.addEventListener("mouseenter", (e) => {
-      e.stopPropagation();
-      if (hoverTimeout) {
-        clearTimeout(hoverTimeout);
-        hoverTimeout = null;
-      }
-      if (leaveTimeout) {
-        clearTimeout(leaveTimeout);
-        leaveTimeout = null;
-        isHiding = false;
-      }
-      if (!isShowing) {
-        section.classList.add("projects-active");
-        projectsShowcase.classList.add("active");
-      }
-    }, { passive: true });
-    
-    projectsShowcase.addEventListener("mouseleave", (e) => {
-      e.stopPropagation();
-      
-      // Check if mouse is moving to trigger
-      const relatedTarget = e.relatedTarget;
-      if (relatedTarget && projectsTrigger.contains(relatedTarget)) {
-        return; // Mouse is moving to trigger, don't hide
-      }
-      
-      hideProjectsShowcase();
-    }, { passive: true });
+
+        // Check if mouse is moving to showcase area
+        const relatedTarget = e.relatedTarget;
+        if (relatedTarget && projectsShowcase.contains(relatedTarget)) {
+          return; // Mouse is moving to showcase, don't hide
+        }
+
+        hideProjectsShowcase();
+      }, { passive: true });
+
+      // Keep showcase open when hovering over it
+      projectsShowcase.addEventListener("mouseenter", (e) => {
+        e.stopPropagation();
+        if (hoverTimeout) {
+          clearTimeout(hoverTimeout);
+          hoverTimeout = null;
+        }
+        if (leaveTimeout) {
+          clearTimeout(leaveTimeout);
+          leaveTimeout = null;
+          isHiding = false;
+        }
+        if (!isShowing) {
+          section.classList.add("projects-active");
+          projectsShowcase.classList.add("active");
+        }
+      }, { passive: true });
+
+      projectsShowcase.addEventListener("mouseleave", (e) => {
+        e.stopPropagation();
+
+        // Check if mouse is moving to trigger
+        const relatedTarget = e.relatedTarget;
+        if (relatedTarget && projectsTrigger.contains(relatedTarget)) {
+          return; // Mouse is moving to trigger, don't hide
+        }
+
+        hideProjectsShowcase();
+      }, { passive: true });
+    }
   }
 
   // Load and render projects from JSON
